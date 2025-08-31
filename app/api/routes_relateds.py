@@ -4,6 +4,7 @@ from typing import List, Union, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
+from fastapi.responses import HTMLResponse
 
 from app.state.db import get_db
 from app.services.related_service import RelatedService
@@ -64,7 +65,12 @@ async def delete_related(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=404, detail="not found")
     return {"deleted": True}
 
-@router.get("/relateds/suggest")
-async def suggest_related_item(product: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+
+@router.get("/relateds/suggest", response_class=HTMLResponse)
+async def suggest_related_item_html(
+    product: str,
+    db: AsyncIOMotorDatabase = Depends(get_db),
+):
     svc = RelatedService(db)
-    return await svc.pick_related_item(product)
+    html_str = await svc.pick_related_item(product)  # agora retorna HTML
+    return HTMLResponse(content=html_str, media_type="text/html")

@@ -4,6 +4,20 @@ from datetime import datetime
 from typing import Optional, List
 from unidecode import unidecode
 from motor.motor_asyncio import AsyncIOMotorDatabase
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from ..config import settings
+from pathlib import Path
+import os, re
+
+
+UPLOAD_DIR = getattr(settings, "upload_dir", "app/assets/uploads")
+BASE_URL = getattr(settings, "public_base_url", "").rstrip("/")
+TEMPLATES_DIR = Path("app/templates")
+
+env = Environment(
+    loader=FileSystemLoader(str(TEMPLATES_DIR)),
+    autoescape=select_autoescape(["html", "xml"]),
+)
 
 def _slugify(text: str) -> str:
     text = unidecode(text or "").lower()
@@ -11,6 +25,17 @@ def _slugify(text: str) -> str:
     text = re.sub(r"\s+", "-", text).strip("-")
     text = re.sub(r"-{2,}", "-", text)
     return text or "item"
+
+def _to_static_url(path: str) -> str:
+    try:
+        up = Path(UPLOAD_DIR).resolve()
+        p  = Path(path).resolve()
+        rel = p.relative_to(up)
+        # ABSOLUTE: http://localhost:8080/static/...
+        return f"{BASE_URL}/static/{str(rel).replace(os.sep,'/')}"
+    except Exception:
+        return ""
+
 
 class RelatedService:
     def __init__(self, db: AsyncIOMotorDatabase):
@@ -28,37 +53,47 @@ class RelatedService:
         doc["id"] = str(doc.pop("_id"))
         return doc
 
-    async def pick_related_item(self, product: str) -> dict:
+    async def pick_related_item(self, product: str) -> str:
         """
-        Recebe um 'product', busca em 'relateds' por esse product,
-        escolhe 1 relacionado aleatoriamente; tenta achar um item correspondente.
-        - Se encontrar item: retorna o objeto do item (com 'id').
-        - Se NÃO encontrar item: retorna {"related": "<string>"}
-        - Se não houver relacionados: retorna {"related": None}
+        Fluxo completo:
+        - escolhe 1 related aleatório para 'product'
+        - tenta achar item correspondente em 'items' (por slug/name)
+        - RENDERIZA e RETORNA HTML (Jinja2):
+            * se encontrou item -> item_card.html (com imagem se houver)
+            * se não encontrou -> promo.html ("Compre {related}")
         """
-        # escolhe 1 related aleatório no Mongo (mais eficiente que carregar todos)
         cur = self.col.aggregate([
             {"$match": {"product": product}},
             {"$sample": {"size": 1}},
         ])
         docs = await cur.to_list(length=1)
-        if not docs:
-            return {"related": None}
+        related = (docs[0].get("related") if docs else None)
 
-        related = docs[0].get("related")
-        if not related:
-            return {"related": None}
+        if related:
+            slug = _slugify(related)
+            item = await self.db["items"].find_one({
+                "$or": [
+                    {"slug": slug},
+                    {"name": {"$regex": f"^{re.escape(related)}$", "$options": "i"}},
+                ]
+            })
+        else:
+            item = None
 
-        slug = _slugify(related)
-
-        item = await self.db["items"].find_one({
-            "$or": [
-                {"slug": slug},
-                {"name": {"$regex": f"^{re.escape(related)}$", "$options": "i"}},
-            ]
-        })
         if item:
-            item["id"] = str(item.pop("_id"))
-            return item
+            ctx = {
+                "product": product,
+                "has_item": True,
+                "item": {
+                    "id": str(item["_id"]),
+                    "name": item.get("name") or related,
+                    "slug": item.get("slug") or slug,
+                    "img_url": _to_static_url(item.get("path", "")),
+                },
+            }
+            tpl = env.get_template("item_card.html")
+            return tpl.render(**ctx)
 
-        return {"related": related}
+        ctx = {"product": product, "has_item": False, "related": related}
+        tpl = env.get_template("promo.html")
+        return tpl.render(**ctx)

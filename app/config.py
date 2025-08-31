@@ -3,18 +3,14 @@ import os
 from dataclasses import dataclass
 from typing import Tuple
 from dotenv import load_dotenv
+from pathlib import Path
+from functools import lru_cache
+
 
 load_dotenv()
 
 UPLOAD_DIR = os.getenv("UPLOAD_DIR", "app/assets/uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-def _tuple4(txt: str | None, default: str) -> Tuple[int,int,int,int]:
-    raw = (txt or default).split(",")
-    vals = [int(x.strip()) for x in raw]
-    if len(vals) != 4:
-        raise ValueError("ROI must be x1,y1,x2,y2")
-    return (vals[0], vals[1], vals[2], vals[3])
 
 @dataclass
 class Settings:
@@ -44,5 +40,10 @@ class Settings:
  
     # Outros
     DEBUG_OUT_DIR: str = "debug_out"
+
+    class Config:
+        env_file = ".env"
+        extra = "ignore"
+
 
 settings = Settings()
