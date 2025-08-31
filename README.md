@@ -9,6 +9,10 @@ Suporta **HTTP/2** (via Hypercorn) para melhor **streaming de frames**.
 
 ---
 
+![Video demo](https://youtu.be/Kku-jB5v3mg)
+
+---
+
 ## Membros
 
 - **Gabriel Alexandre Vieira** — <gabrielvieira840@gmail.com>  
