@@ -1,6 +1,7 @@
 from __future__ import annotations
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, HTMLResponse
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from ..deps import get_frame_service
+from fastapi.responses import HTMLResponse
 from ..services.frame_service import FrameService
 
 router = APIRouter(prefix="", tags=["Frames"])
