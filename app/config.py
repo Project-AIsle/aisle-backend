@@ -24,11 +24,25 @@ class Settings:
     mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
     mongodb_db: str = os.getenv("MONGODB_DB", "narvalcart")
     # CV
-    roi: Tuple[int,int,int,int] = _tuple4(os.getenv("ROI"), "100,100,400,400")
-    match_threshold: float = float(os.getenv("MATCH_THRESHOLD", "0.78"))
-    templates_dir: str = os.getenv("TEMPLATES_DIR", "app/assets/templates")
-    use_onnx: bool = os.getenv("USE_ONNX", "false").lower() in {"1","true","yes"}
-    onnx_model_path: str = os.getenv("ONNX_MODEL_PATH", "app/assets/models/detection.onnx")
-    onnx_model_data: str = os.getenv("ONNX_MODEL_DATA", "app/assets/models/model.data")
+    # -----------------------------
+    # ONNX Runtime / Modelos
+    # -----------------------------
+    # Detector (YOLO/YOLOX/YOLOv8 exportado para ONNX)
+    YOLOX_MODEL: str = os.path.join(os.getcwd(), "assets/models/yolo/model.onnx")
+    YOLOX_INPUT_W: int = 640
+    YOLOX_INPUT_H: int = 640
+    YOLOX_INPUT_NAME: str | None = None           # se None, detecta automaticamente
+    YOLOX_CONF_THR: float = 0.20
+    YOLOX_IOU_THR: float = 0.60
+
+    CLIP_MODEL_NAME: str = "ViT-B/32"
+    CLIP_DEVICE: str = "cpu"
+
+    # Provedores do ONNX Runtime (separe por vírgulas para múltiplos)
+    # Ex.: "CPUExecutionProvider"
+    ORT_PROVIDERS: str = "CPUExecutionProvider"
+ 
+    # Outros
+    DEBUG_OUT_DIR: str = "debug_out"
 
 settings = Settings()
