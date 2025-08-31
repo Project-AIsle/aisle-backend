@@ -37,7 +37,7 @@ class Detector:
         return prediction
 
 class CLIPClassifier:
-    def __init__(self, model_name: str = , device: str = "cuda" if torch.cuda.is_available() else "cpu"):
+    def __init__(self, model_name: str = "ViT-B/32", device: str = "cuda" if torch.cuda.is_available() else "cpu"):
         # Carrega o modelo CLIP
         self.device = device
         self.model, self.preprocess = clip.load(model_name, device=self.device)
