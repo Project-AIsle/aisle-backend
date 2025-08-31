@@ -42,6 +42,29 @@ class RelatedService:
         self.db = db
         self.col = db["relateds"]
 
+    async def list_relateds(
+        self,
+        product: Optional[str] = None,
+        related: Optional[str] = None,
+        page: int = 1,
+        limit: int = 50,
+    ):
+        q: dict = {}
+        if product:
+            q["product"] = product
+        if related:
+            q["related"] = related
+
+        total = await self.db["relateds"].count_documents(q)
+        cursor = self.db["relateds"].find(q).skip((page - 1) * limit).limit(limit).sort("_id", -1)
+
+        items = []
+        async for d in cursor:   # <<< motor: usar async for
+            d["id"] = str(d.pop("_id"))
+            items.append(d)
+
+        return {"items": items, "total": total, "page": page, "limit": limit}
+
     async def upsert_partial(self, payload: dict) -> dict:
         product = payload["product"]
         related = payload["related"]

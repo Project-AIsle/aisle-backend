@@ -12,13 +12,6 @@ load_dotenv()
 UPLOAD_DIR = os.getenv("UPLOAD_DIR", "app/assets/uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-def _tuple4(txt: str | None, default: str) -> Tuple[int,int,int,int]:
-    raw = (txt or default).split(",")
-    vals = [int(x.strip()) for x in raw]
-    if len(vals) != 4:
-        raise ValueError("ROI must be x1,y1,x2,y2")
-    return (vals[0], vals[1], vals[2], vals[3])
-
 @dataclass
 class Settings:
     api_prefix: str = os.getenv("API_PREFIX", "/v1")
@@ -27,24 +20,30 @@ class Settings:
     mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://narvalcart-mongo:27017")
     mongodb_db: str = os.getenv("MONGODB_DB", "narvalcart")
     # CV
-    roi: Tuple[int,int,int,int] = _tuple4(os.getenv("ROI"), "100,100,400,400")
-    match_threshold: float = float(os.getenv("MATCH_THRESHOLD", "0.78"))
-    templates_dir: str = os.getenv("TEMPLATES_DIR", "app/assets/templates")
-    use_onnx: bool = os.getenv("USE_ONNX", "false").lower() in {"1","true","yes"}
-    onnx_model_path: str = os.getenv("ONNX_MODEL_PATH", "app/assets/models/detection.onnx")
-    onnx_model_data: str = os.getenv("ONNX_MODEL_DATA", "app/assets/models/model.data")
-    # upload dir
-    upload_dir: str = str(Path(__file__).resolve().parent / "assets" / "uploads")
-    public_base_url: str = "http://localhost:8080"   # <<<<<< ABSOLUTE BASE
+    # -----------------------------
+    # ONNX Runtime / Modelos
+    # -----------------------------
+    # Detector (YOLO/YOLOX/YOLOv8 exportado para ONNX)
+    YOLOX_MODEL: str = os.path.join(os.getcwd(), "assets/models/yolo/model.onnx")
+    YOLOX_INPUT_W: int = 640
+    YOLOX_INPUT_H: int = 640
+    YOLOX_INPUT_NAME: str | None = None           # se None, detecta automaticamente
+    YOLOX_CONF_THR: float = 0.20
+    YOLOX_IOU_THR: float = 0.60
+
+    CLIP_MODEL_NAME: str = "ViT-B/32"
+    CLIP_DEVICE: str = "cpu"
+
+    # Provedores do ONNX Runtime (separe por vírgulas para múltiplos)
+    # Ex.: "CPUExecutionProvider"
+    ORT_PROVIDERS: str = "CPUExecutionProvider"
+ 
+    # Outros
+    DEBUG_OUT_DIR: str = "debug_out"
 
     class Config:
         env_file = ".env"
         extra = "ignore"
-@lru_cache
-def _get() -> "Settings":
-    s = Settings()
-    Path(s.upload_dir).mkdir(parents=True, exist_ok=True)
-    return s
 
 
 settings = Settings()
