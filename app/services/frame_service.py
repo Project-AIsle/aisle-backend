@@ -12,9 +12,9 @@ class FrameService:
         self.state = state
         self.related_service = related_service
 
-    async def process(self, payload: dict) -> dict:
+    async def process(self, payload: bytes) -> str:
         # Run detector
-        detection = self.detector.infer(payload["frame"])
+        detection = self.detector.infer(payload)
         if not detection:
-            return {}
-        return self.related_service(detection)
+            return ""
+        return await self.related_service.pick_related_item(detection)
