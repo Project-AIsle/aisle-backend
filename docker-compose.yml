@@ -7,7 +7,7 @@ services:
       MONGODB_URI: mongodb://mongo:27017
       MONGODB_DB: narvalcart
       UPLOAD_DIR: /app/app/assets/uploads
-      PUBLIC_BASE_URL: http://localhost:8080
+      PUBLIC_BASE_URL: http://localhost:8443
     volumes:
       - uploads:/app/app/assets/uploads
       - ./app/assets/models:/app/app/assets/models:ro
