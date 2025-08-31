@@ -13,7 +13,7 @@ services:
       # opcional: garantir modelos por bind-mount (remova se já copiados na image)
       - ./app/assets/models:/app/app/assets/models:ro
     ports:
-      - "8080:8080"
+      - "8443:8443"
     depends_on:
       mongo:
         condition: service_healthy
