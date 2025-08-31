@@ -1,4 +1,5 @@
 
+
 # Aura - API
 ## Advanced Retail User Assistant
 
@@ -9,7 +10,7 @@ Suporta **HTTP/2** (via Hypercorn) para melhor **streaming de frames**.
 
 ---
 
-![Video demo](https://youtu.be/Kku-jB5v3mg)
+- Video demo [https://youtu.be/Kku-jB5v3mg](Video%20demo)
 
 ---
 
