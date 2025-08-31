@@ -63,3 +63,8 @@ async def delete_related(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="not found")
     return {"deleted": True}
+
+@router.get("/relateds/suggest")
+async def suggest_related_item(product: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    svc = RelatedService(db)
+    return await svc.pick_related_item(product)
