@@ -19,8 +19,8 @@ async def list_relateds(
     related: Optional[str] = None,
     page: int = 1,
     limit: int = 50,
-    svc: RelatedService = Depends(get_related_service),
 ):
+    svc = await get_related_service()
     return await svc.list_relateds(product, related, page, limit)
 
 @router.put("/relateds")
