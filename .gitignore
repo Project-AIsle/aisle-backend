@@ -1,0 +1,89 @@
+# ----------------------------------------
+# Python / Virtualenv
+# ----------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+ENV/
+env/
+
+# debug and assets
+debug_out/
+assets/
+
+# pip / poetry / etc
+pip-wheel-metadata/
+.installed.cfg
+*.whl
+*.lock
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+.profile_default/
+ipython_config.py
+
+# ----------------------------------------
+# Logs e saídas
+# ----------------------------------------
+*.log
+*.csv
+*.ndjson
+*.out
+*.err
+*.tmp
+*.bak
+
+# logs do projeto AIsle
+data/logs/*
+!data/logs/.gitkeep
+
+# ----------------------------------------
+# IDEs / Editors
+# ----------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# ----------------------------------------
+# OS / Misc
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ----------------------------------------
+# Certificados (não versionar em repositório público!)
+# ----------------------------------------
+*.pem
+*.crt
+*.key
+
+# ----------------------------------------
+# Vídeos de teste / dados locais
+# ----------------------------------------
+ui/*.mp4
+tools/*.mp4
+
+# ----------------------------------------
+# Node / Frontend (se expandir no futuro)
+# ----------------------------------------
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnp.*
