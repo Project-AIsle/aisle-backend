@@ -23,12 +23,5 @@ COPY . /app
 RUN mkdir -p /app/app/assets/uploads/items
 ENV UPLOAD_PATH /app/app/assets/uploads
 
-# certs
-RUN mkdir certs
-RUN openssl req -x509 -newkey rsa:2048 -nodes \
-  -keyout certs/dev.key.pem \
-  -out    certs/dev.cert.pem \
-  -days 7 -subj "/CN=localhost"
-
 EXPOSE 8443
-CMD ["hypercorn", "-c", "hypercorn.toml", "app.main:app"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8443"]
