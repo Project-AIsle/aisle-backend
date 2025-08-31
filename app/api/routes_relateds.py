@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse
 from app.state.db import get_db
 from app.services.related_service import RelatedService
 from app.api.schemas import RelatedUpsert, RelatedUpsertBatch
+from app.deps import get_related_service
 
 router = APIRouter()
 
@@ -18,23 +19,9 @@ async def list_relateds(
     related: Optional[str] = None,
     page: int = 1,
     limit: int = 50,
-    db: AsyncIOMotorDatabase = Depends(get_db),
+    svc: AsyncIOMotorDatabase = Depends(get_related_service),
 ):
-    q: dict = {}
-    if product:
-        q["product"] = product
-    if related:
-        q["related"] = related
-
-    total = await db["relateds"].count_documents(q)
-    cursor = db["relateds"].find(q).skip((page - 1) * limit).limit(limit).sort("_id", -1)
-
-    items = []
-    async for d in cursor:   # <<< motor: usar async for
-        d["id"] = str(d.pop("_id"))
-        items.append(d)
-
-    return {"items": items, "total": total, "page": page, "limit": limit}
+    return await svc.list_relateds(product, related, page, limit)
 
 @router.put("/relateds")
 async def upsert_related(
