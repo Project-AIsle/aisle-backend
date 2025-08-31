@@ -24,7 +24,7 @@ class Settings:
     # ONNX Runtime / Modelos
     # -----------------------------
     # Detector (YOLO/YOLOX/YOLOv8 exportado para ONNX)
-    YOLOX_MODEL: str = os.path.join(os.getcwd(), "assets/models/yolo/model.onnx")
+    YOLOX_MODEL: str = os.path.join(os.getcwd(), "app/assets/models/yolo/model.onnx")
     YOLOX_INPUT_W: int = 640
     YOLOX_INPUT_H: int = 640
     YOLOX_INPUT_NAME: str | None = None           # se None, detecta automaticamente
