@@ -3,6 +3,9 @@ import os
 from dataclasses import dataclass
 from typing import Tuple
 from dotenv import load_dotenv
+from pathlib import Path
+from functools import lru_cache
+
 
 load_dotenv()
 
@@ -30,5 +33,18 @@ class Settings:
     use_onnx: bool = os.getenv("USE_ONNX", "false").lower() in {"1","true","yes"}
     onnx_model_path: str = os.getenv("ONNX_MODEL_PATH", "app/assets/models/detection.onnx")
     onnx_model_data: str = os.getenv("ONNX_MODEL_DATA", "app/assets/models/model.data")
+    # upload dir
+    upload_dir: str = str(Path(__file__).resolve().parent / "assets" / "uploads")
+    public_base_url: str = "http://localhost:8080"   # <<<<<< ABSOLUTE BASE
+
+    class Config:
+        env_file = ".env"
+        extra = "ignore"
+@lru_cache
+def _get() -> "Settings":
+    s = Settings()
+    Path(s.upload_dir).mkdir(parents=True, exist_ok=True)
+    return s
+
 
 settings = Settings()
