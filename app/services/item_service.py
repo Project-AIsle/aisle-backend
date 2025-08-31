@@ -7,8 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from unidecode import unidecode
 from ..config import settings
 
-UPLOAD_DIR = getattr(settings, "upload_dir", "app/assets/uploads")
-ITEMS_DIR = os.path.join(UPLOAD_DIR, "items")
+ITEMS_DIR = os.path.join(settings.upload_dir, "items")
 os.makedirs(ITEMS_DIR, exist_ok=True)
 
 def _id_str(doc: dict | None):

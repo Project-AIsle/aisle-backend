@@ -10,8 +10,8 @@ from pathlib import Path
 import os, re
 
 
-UPLOAD_DIR = getattr(settings, "upload_dir", "app/assets/uploads")
-BASE_URL = getattr(settings, "public_base_url", "").rstrip("/")
+UPLOAD_DIR = settings.upload_dir
+BASE_URL = settings.public_base_url.rstrip("/")
 TEMPLATES_DIR = Path("app/templates")
 
 env = Environment(

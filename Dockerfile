@@ -22,6 +22,7 @@ COPY . /app
 # garante diretório de uploads
 RUN mkdir -p /app/app/assets/uploads/items
 ENV UPLOAD_PATH /app/app/assets/uploads
+ENV PUBLIC_BASE_URL http://localhost:8443
 
 EXPOSE 8443
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8443"]

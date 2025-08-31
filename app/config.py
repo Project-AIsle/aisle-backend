@@ -42,6 +42,7 @@ class Settings:
     DEBUG_OUT_DIR: str = "debug_out"
 
     upload_dir: str = os.environ.get("UPLOAD_PATH")
+    public_base_url: str = os.environ.get("PUBLIC_BASE_URL")
 
     class Config:
         env_file = ".env"
