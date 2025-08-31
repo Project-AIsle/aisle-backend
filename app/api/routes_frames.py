@@ -5,7 +5,7 @@ from ..services.frame_service import FrameService
 
 router = APIRouter(prefix="", tags=["Frames"])
 
-@router.post("/frames", status_code=202)
+@router.post("/frames", status_code=200)
 async def post_frames(file: UploadFile = File(default=None)):
     try:
         svc = await get_frame_service()
