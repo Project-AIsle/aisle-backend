@@ -1,7 +1,7 @@
 from __future__ import annotations
 from functools import lru_cache
 
-from .state.db import MongoState
+from .state.db import MongoState, get_db
 from .core.detector import Detector, YOLOXDetector, CLIPClassifier
 from .services.related_service import RelatedService
 from .services.item_service import ItemService
@@ -25,11 +25,11 @@ def get_detector() -> Detector:
 
 @lru_cache(maxsize=1)
 def get_related_service() -> RelatedService:
-    return RelatedService(get_state())
+    return RelatedService(get_db())
 
 @lru_cache(maxsize=1)
 def get_item_service() -> ItemService:
-    return ItemService(get_state())
+    return ItemService(get_db())
 
 @lru_cache(maxsize=1)
 def get_frame_service() -> FrameService:
