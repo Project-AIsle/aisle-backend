@@ -1,65 +1,66 @@
-# Narval Cart — Structured API (Mongo + CV)
+# Narval Cart API
 
-Routes (as requested):
-- **POST /relateds** — create product relations
-- **GET /relateds** — list relations
-- **DELETE /relateds/{id}** — delete a relation
-- **POST /items** — create cart item
-- **GET /items** — list cart items
-- **DELETE /items/{id}** — delete cart item
-- **POST /frames** — send a frame; returns detected products in ROI and related suggestions for products in cart
+API para detecção e recomendação de produtos em carrinhos de compra. Criando relação entre esses produtos.
+para gerar um fluxo de compra mais eficiente.
 
-MongoDB collections:
-- `relateds`: `{ product: string, related: string, score: number }`
-- `products` (support): `{ type: string, name: string, path: string }`
+Componentes principais:
 
-## Run
-```bash
-cd app
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+- **Items**: cadastro de itens (nome + imagem) com *slug* normalizado.
+- **Relateds**: relações “produto → relacionado” com *score* (ex.: macarrão → molho de tomate).
+- **Frames**: ingestão de quadros (arquivo) para detectar produtos em **área de interesse** usando um modelo de visão computacional.
+- **HTTP/2**: suportamos abrir conexão via HTTP/2 (recomendado para **melhor streaming de frames**).
 
-# .env (optional)
-cat > .env << 'EOF'
+> Na raiz do projeto há uma coleção do Postman para facilitar os testes: **`doc-postman-requests.json`**.
+
+---
+
+## Sumário
+
+- [Arquitetura](#arquitetura)
+- [Pré-requisitos](#pré-requisitos)
+- [Configuração (.env)](#configuração-env)
+- [Execução — Local (venv)](#execução--local-venv)
+- [Execução — Docker Compose](#execução--docker-compose)
+- [HTTP/2 (Hypercorn)](#http2-hypercorn)
+- [Coleção Postman](#coleção-postman)
+- [Endpoints](#endpoints)
+- [Exemplos de uso (curl)](#exemplos-de-uso-curl)
+- [Equipe](#equipe)
+- [Licença](#licença)
+
+---
+
+## Arquitetura
+
+- **FastAPI** (ASGI)  
+- **MongoDB** (collections: `items`, `relateds`, `products` de suporte) via **Motor** (async)  
+- **Jinja2** para views HTML de sugestão  
+- **OpenCV** (headless) opcional para decodificar frames e rodar o modelo de detecção
+- **Hypercorn** (HTTP/2)
+- **uvicorn** (HTTP/1.1) 
+- **uvloop** (loop de eventos)
+- **uvicorn-reload** (reload)
+- **YOLO** para detecção de ROI
+- **Clip** para definição melhor de tipos de objetos
+- **Arquivos estáticos** das imagens servidos em `/static` (diretório configurável)
+
+---
+
+## Pré-requisitos
+
+- **Python 3.12+**
+- **MongoDB 6/7/8+** (local ou via container)
+- **lib de sistema**: `build-essential` pode ser necessário para algumas wheels
+
+---
+
+## Configuração (.env)
+
+Crie um arquivo **`.env`** na raiz ou em `app/.env` com:
+
+```env
 API_PREFIX=/v1
 MONGODB_URI=mongodb://localhost:27017
 MONGODB_DB=narvalcart
-ROI=100,100,400,400
-MATCH_THRESHOLD=0.78
-TEMPLATES_DIR=app/assets/templates
-USE_ONNX=false
-ONNX_MODEL_PATH=app/assets/models/detection.onnx
-ONNX_MODEL_DATA=app/assets/models/model.data
-EOF
-
-uvicorn app.main:app --reload --port 8080
-# http://localhost:8080/v1/openapi.json
-```
-
-## Examples (cURL)
-
-### Create relation (relateds)
-```bash
-curl -s -X POST 'http://localhost:8080/v1/relateds'  -H 'Content-Type: application/json'  -d '[{"product":"macarrão","related":"molho de tomate","score":0.9}]' | jq .
-```
-
-### List relations by product
-```bash
-curl -s 'http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão' | jq .
-```
-
-### Create cart item
-```bash
-curl -s -X POST 'http://localhost:8080/v1/items'  -H 'Content-Type: application/json'  -d '{"name":"macarrão","quantity":2,"note":"grano duro"}' | jq .
-```
-
-### Send frame (ROI detection + suggestions)
-```bash
-# create a base64 of your frame.png
-b64=$(base64 -w 0 frame.png)  # macOS: base64 frame.png | tr -d '\n'
-
-curl -s -X POST 'http://localhost:8080/v1/frames'  -H 'Content-Type: application/json'  -d '{
-  "frame": { "encoding":"base64", "data":"'"$b64"'" },
-  "cartProductIds": ["macarrão"]
-}' | jq .
-```
+UPLOAD_DIR=app/assets/uploads
+PUBLIC_BASE_URL=http://localhost:8080

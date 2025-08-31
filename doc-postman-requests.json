@@ -1,13 +1,13 @@
 {
 	"info": {
 		"_postman_id": "5cc8c07e-8904-4633-b04a-0521f2c23ca6",
-		"name": "NarvalCart",
+		"name": "AuraAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "9066290"
 	},
 	"item": [
 		{
-			"name": "http://localhost:8080/v1/relateds",
+			"name": "http://localhost:8443/v1/relateds",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -18,7 +18,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"items\": [\n        {\n            \"product\": \"arroz\",\n            \"related\": \"feijão\",\n            \"score\": 0.99\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"molho de tomate\",\n            \"score\": 0.80\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"queijo ralado\",\n            \"score\": 0.88\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"queijo parmesão\",\n            \"score\": 0.92\n        }\n    ]\n}",
+					"raw": "{\n    \"items\": [\n        {\n            \"product\": \"arroz\",\n            \"related\": \"feijão\",\n            \"score\": 0.99\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"molho de tomate\",\n            \"score\": 0.80\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"queijo ralado\",\n            \"score\": 0.88\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"queijo parmesão\",\n            \"score\": 0.92\n        },\n        {\n            \"product\": \"refrigerante\",\n            \"related\": \"macarrão\",\n            \"score\": 0.92\n        },\n        {\n            \"related\": \"salgadinhos\",\n            \"product\": \"refrigerante\",\n            \"createdAt\": \"2025-08-31T13:29:10.368000\",\n            \"score\": 0.94,\n            \"id\": \"68b44e265f9f01ab382c9440\"\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -26,12 +26,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/v1/relateds",
+					"raw": "http://localhost:8443/v1/relateds",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "8443",
 					"path": [
 						"v1",
 						"relateds"
@@ -42,17 +42,17 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão",
+			"name": "http://localhost:8443/v1/relateds?page=1&limit=50&product=macarrão",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/v1/relateds?page=1&limit=50",
+					"raw": "http://localhost:8443/v1/relateds?page=1&limit=50",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "8443",
 					"path": [
 						"v1",
 						"relateds"
@@ -73,17 +73,17 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão Copy",
+			"name": "http://localhost:8443/v1/relateds?page=1&limit=50&product=macarrão Copy",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/v1/relateds/suggest?product=macarrão",
+					"raw": "http://localhost:8443/v1/relateds/suggest?product=macarrão",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "8443",
 					"path": [
 						"v1",
 						"relateds",
@@ -101,7 +101,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/v1/items",
+			"name": "http://localhost:8443/v1/items",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -115,29 +115,75 @@
 					"formdata": [
 						{
 							"key": "name",
-							"value": "macarrão",
+							"value": "queijo parmesão ",
 							"type": "text"
 						},
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/home/fabriel/Imagens/Imagem colada (2).png"
+							"src": "/home/fabriel/Imagens/IMG_3291 (1).jpg"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/v1/items",
+					"raw": "http://localhost:8443/v1/items",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "8443",
 					"path": [
 						"v1",
 						"items"
 					]
 				},
 				"description": "Generated from cURL: curl -s -X POST 'http://localhost:8080/v1/items'  -H 'Content-Type: application/json'  -d '{\"name\":\"macarrão\",\"quantity\":2,\"note\":\"grano duro\"}'"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8443/v1/frames",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "macarrão",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Snapdragon/Pictures/Camera Roll/WIN_20250831_06_20_43_Pro.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8443/v1/frames",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"v1",
+						"frames"
+					]
+				}
 			},
 			"response": []
 		}
