@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Literal
 from pydantic import BaseModel, Field
+from typing import Optional, List
 
 # Relateds collection
 class RelatedInput(BaseModel):
@@ -52,3 +53,11 @@ class FrameAccepted(BaseModel):
     status: Literal["queued","processing","done","failed"]
     detected: Optional[list[DetectionOut]] = None
     suggested: Optional[list[Related]] = None
+
+class RelatedUpsert(BaseModel):
+    product: str = Field(...)
+    related: str = Field(...)
+    score: Optional[float] = Field(None, ge=0, le=1)
+
+class RelatedUpsertBatch(BaseModel):
+    items: List[RelatedUpsert]

@@ -1,35 +1,65 @@
-from __future__ import annotations
-from typing import Optional, List
-from fastapi import APIRouter, Depends, Query, HTTPException
-from .schemas import Related, RelatedInput, PaginatedRelated
-from ..deps import get_related_service
-from ..services.related_service import RelatedService
+# app/api/routes_relateds.py  (substitua pelo abaixo)
 
-router = APIRouter(prefix="", tags=["Relateds"])
+from typing import List, Union, Optional
+from fastapi import APIRouter, Depends, HTTPException
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from bson import ObjectId
 
-@router.post("/relateds", response_model=List[Related], status_code=201)
-async def create_relateds(payload: List[RelatedInput] | RelatedInput,
-                          svc: RelatedService = Depends(get_related_service)):
-    docs = payload if isinstance(payload, list) else [payload]
-    created = await svc.create_many([d.model_dump() for d in docs])
-    if not created:
-        raise HTTPException(status_code=409, detail={"error":"conflict","message":"Already exists"})
-    return created
+from app.state.db import get_db
+from app.services.related_service import RelatedService
+from app.api.schemas import RelatedUpsert, RelatedUpsertBatch
 
-@router.get("/relateds", response_model=PaginatedRelated)
+router = APIRouter()
+
+@router.get("/relateds")
 async def list_relateds(
-    page: int = Query(1, ge=1),
-    limit: int = Query(20, ge=1, le=200),
     product: Optional[str] = None,
     related: Optional[str] = None,
-    svc: RelatedService = Depends(get_related_service)
+    page: int = 1,
+    limit: int = 50,
+    db: AsyncIOMotorDatabase = Depends(get_db),
 ):
-    data, total = await svc.list(page, limit, product, related)
-    return {"data": data, "page": page, "limit": limit, "total": total}
+    q: dict = {}
+    if product:
+        q["product"] = product
+    if related:
+        q["related"] = related
 
-@router.delete("/relateds/{id}", status_code=204)
-async def delete_related(id: str, svc: RelatedService = Depends(get_related_service)):
-    ok = await svc.delete(id)
-    if not ok:
-        raise HTTPException(status_code=404, detail={"error":"not_found","message":"Related not found"})
-    return None
+    total = await db["relateds"].count_documents(q)
+    cursor = db["relateds"].find(q).skip((page - 1) * limit).limit(limit).sort("_id", -1)
+
+    items = []
+    async for d in cursor:   # <<< motor: usar async for
+        d["id"] = str(d.pop("_id"))
+        items.append(d)
+
+    return {"items": items, "total": total, "page": page, "limit": limit}
+
+@router.put("/relateds")
+async def upsert_related(
+    payload: Union[RelatedUpsert, RelatedUpsertBatch, List[RelatedUpsert]],
+    db: AsyncIOMotorDatabase = Depends(get_db),
+):
+    svc = RelatedService(db)
+    if isinstance(payload, list):
+        items = [p.model_dump(exclude_none=True) for p in payload]
+    elif isinstance(payload, RelatedUpsertBatch):
+        items = [p.model_dump(exclude_none=True) for p in payload.items]
+    else:
+        items = [payload.model_dump(exclude_none=True)]
+
+    out = []
+    for it in items:
+        out.append(await svc.upsert_partial(it))
+    return {"items": out, "count": len(out)}
+
+@router.delete("/relateds/{id}")
+async def delete_related(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    try:
+        oid = ObjectId(id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="invalid id")
+    res = await db["relateds"].delete_one({"_id": oid})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="not found")
+    return {"deleted": True}

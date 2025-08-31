@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+UPLOAD_DIR = os.getenv("UPLOAD_DIR", "app/assets/uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 def _tuple4(txt: str | None, default: str) -> Tuple[int,int,int,int]:
     raw = (txt or default).split(",")
     vals = [int(x.strip()) for x in raw]
