@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "5cc8c07e-8904-4633-b04a-0521f2c23ca6",
+		"name": "NarvalCart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9066290"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/v1/relateds",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"items\": [\n        {\n            \"product\": \"arroz\",\n            \"related\": \"feijão\",\n            \"score\": 0.99\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"molho de tomate\",\n            \"score\": 0.80\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"queijo ralado\",\n            \"score\": 0.88\n        },\n        {\n            \"product\": \"macarrão\",\n            \"related\": \"queijo parmesão\",\n            \"score\": 0.92\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/relateds",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"relateds"
+					]
+				},
+				"description": "Generated from cURL: curl -s -X POST 'http://localhost:8080/v1/relateds' \\\n -H 'Content-Type: application/json' \\\n -d '[{\"product\":\"macarrão\",\"related\":\"molho de tomate\",\"score\":0.9}]' | jq .\n"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/relateds?page=1&limit=50",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"relateds"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "50"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -s 'http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão'"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/relateds/suggest?product=macarrão",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"relateds",
+						"suggest"
+					],
+					"query": [
+						{
+							"key": "product",
+							"value": "macarrão"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -s 'http://localhost:8080/v1/relateds?page=1&limit=50&product=macarrão'"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/v1/items",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "macarrão",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/fabriel/Imagens/Imagem colada (2).png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"items"
+					]
+				},
+				"description": "Generated from cURL: curl -s -X POST 'http://localhost:8080/v1/items'  -H 'Content-Type: application/json'  -d '{\"name\":\"macarrão\",\"quantity\":2,\"note\":\"grano duro\"}'"
+			},
+			"response": []
+		}
+	]
+}
