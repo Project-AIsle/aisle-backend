@@ -2,15 +2,19 @@
 ## Advanced Retail User Assistant
 
 ##Membros:
-Gabriel Alexandre Vieira
-gabrielvieira840@gmail.com
-Yan Vitor Santana de Almeida
-yan.almeida91@hotmail.com
-Cristiano Silva - ziwehdafe@gmail.com
- Jessica Mello Pinheiro Leite
-jessica.melloleite@gmail.com
-Juliana Mello Pinheiro Leite
-juliana.leiite@icloud.com
+
+- Gabriel Alexandre Vieira
+    - gabrielvieira840@gmail.com
+- Yan Vitor Santana de Almeida
+    - yan.almeida91@hotmail.com
+- Cristiano Silva 
+    - ziwehdafe@gmail.com
+- Jessica Mello Pinheiro Leite
+    -   jessica.melloleite@gmail.com
+- Juliana Mello Pinheiro Leite
+    - juliana.leiite@icloud.com
+
+----
 
 API para detecção e recomendação de produtos em carrinhos de compra. Criando relação entre esses produtos.
 para gerar um fluxo de compra mais eficiente.
