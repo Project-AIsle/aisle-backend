@@ -1,0 +1,40 @@
+services:
+  api:
+    build: .
+    container_name: narvalcart-api
+    environment:
+      API_PREFIX: /v1
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DB: narvalcart
+      UPLOAD_DIR: /app/app/assets/uploads
+      PUBLIC_BASE_URL: http://localhost:8080
+    volumes:
+      - uploads:/app/app/assets/uploads
+      # opcional: garantir modelos por bind-mount (remova se já copiados na image)
+      - ./app/assets/models:/app/app/assets/models:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:8.0
+    container_name: narvalcart-mongo
+    command: ["--bind_ip_all"]
+    environment:
+      MONGO_INITDB_DATABASE: narvalcart
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27018:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--host", "localhost", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+volumes:
+  uploads:
+  mongodata:

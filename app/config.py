@@ -24,7 +24,7 @@ class Settings:
     api_prefix: str = os.getenv("API_PREFIX", "/v1")
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
     # Mongo
-    mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+    mongodb_uri: str = os.getenv("MONGODB_URI", "mongodb://narvalcart-mongo:27017")
     mongodb_db: str = os.getenv("MONGODB_DB", "narvalcart")
     # CV
     roi: Tuple[int,int,int,int] = _tuple4(os.getenv("ROI"), "100,100,400,400")
