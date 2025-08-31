@@ -8,7 +8,7 @@ WORKDIR /app
 
 # system deps (se precisar compilar pacotes)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+    build-essential git \
  && rm -rf /var/lib/apt/lists/*
 
 # requirements
@@ -17,10 +17,11 @@ RUN pip install --upgrade pip setuptools wheel \
  && pip install -r requirements.txt
 
 # código + assets
-COPY app ./app
+COPY . /app
 
 # garante diretório de uploads
-RUN mkdir -p /app/app/assets/uploads
+RUN mkdir -p /app/app/assets/uploads/items
+ENV UPLOAD_PATH /app/app/assets/uploads
 
-EXPOSE 8080
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+EXPOSE 8443
+CMD ["hypercorn", "-c", "hypercorn.toml", "app.main:app"]

@@ -41,6 +41,8 @@ class Settings:
     # Outros
     DEBUG_OUT_DIR: str = "debug_out"
 
+    upload_dir: str = os.env.get("UPLOAD_PATH")
+
     class Config:
         env_file = ".env"
         extra = "ignore"
