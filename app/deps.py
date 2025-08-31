@@ -15,7 +15,7 @@ def get_state() -> MongoState:
 async def get_detector() -> Detector:
     svc = await get_related_service()
     all_items = await svc.list_relateds()
-    all_classes = list({item["related"] for item in all_items["items"]})
+    all_classes = list({item["product"] for item in all_items["items"]})
 
     yolo = YOLOXDetector(model_path=settings.YOLOX_MODEL, providers=[settings.ORT_PROVIDERS], input_size=(settings.YOLOX_INPUT_W, settings.YOLOX_INPUT_H), score_thr=settings.YOLOX_CONF_THR, iou_thr=settings.YOLOX_IOU_THR)
     classifier = CLIPClassifier(model_name=settings.CLIP_MODEL_NAME, device=settings.CLIP_DEVICE)

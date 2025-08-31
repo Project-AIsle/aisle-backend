@@ -10,7 +10,6 @@ services:
       PUBLIC_BASE_URL: http://localhost:8080
     volumes:
       - uploads:/app/app/assets/uploads
-      # opcional: garantir modelos por bind-mount (remova se já copiados na image)
       - ./app/assets/models:/app/app/assets/models:ro
     ports:
       - "8443:8443"
