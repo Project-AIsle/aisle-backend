@@ -34,26 +34,6 @@ class PaginatedItems(BaseModel):
     total: int
 
 # Frames
-class FrameImage(BaseModel):
-    encoding: Literal["base64","url"]
-    data: Optional[str] = None
-    url: Optional[str] = None
-
-class FrameInput(BaseModel):
-    frame: FrameImage
-    cartProductIds: Optional[list[str]] = None
-
-class DetectionOut(BaseModel):
-    product: str
-    confidence: float
-
-class FrameAccepted(BaseModel):
-    id: str
-    receivedAt: str
-    status: Literal["queued","processing","done","failed"]
-    detected: Optional[list[DetectionOut]] = None
-    suggested: Optional[list[Related]] = None
-
 class RelatedUpsert(BaseModel):
     product: str = Field(...)
     related: str = Field(...)
