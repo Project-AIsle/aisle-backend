@@ -25,11 +25,13 @@ def get_detector() -> Detector:
 
 @lru_cache(maxsize=1)
 def get_related_service() -> RelatedService:
-    return RelatedService(get_db())
+    db = asyncio.run(get_db())
+    return RelatedService(db)
 
 @lru_cache(maxsize=1)
 def get_item_service() -> ItemService:
-    return ItemService(get_db())
+    db = asyncio.run(get_db())
+    return ItemService(db)
 
 @lru_cache(maxsize=1)
 def get_frame_service() -> FrameService:
