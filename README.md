@@ -1,7 +1,7 @@
 # Aura - API
 ## Advanced Retail User Assistant
 
-##Membros:
+## Membros:
 
 - Gabriel Alexandre Vieira
     - gabrielvieira840@gmail.com
